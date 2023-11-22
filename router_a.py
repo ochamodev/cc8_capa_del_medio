@@ -32,9 +32,19 @@ def process_from_server(message):
     
     
 def process_from_router(package):
-    data = package.decode(ENCODING)
-    data = data.strip("\n")
-    print("data recibida: ", data)
+    message = package.decode(ENCODING)
+    #data = data.strip("\n")
+    data = ""
+    for element in message:
+        print(element)
+        if (element == "\n"):
+            break
+        data = data + element
+    if (len(data) == 0):
+        return
+    
+    print("data recibida:", data)
+    print(": ", data == "INIT")
     if (data == "INIT"):
         uart1.write("STARTED".encode(ENCODING))
         global COMMUNICATION_ESTABLISHED
@@ -47,6 +57,7 @@ def process_from_router(package):
         global COMMUNICATION_ESTABLISHED
         COMMUNICATION_ESTABLISHED = True
         messageParts = data.split("|")
+        print(messageParts)
         messageData = {
             "emitter": messageParts[0],
             "hostReceiver": messageParts[1],
@@ -57,7 +68,9 @@ def process_from_router(package):
         print("messageData: ", messageData)
         if (messageData["hostReceiver"] == "GR2"):
             print("inside if hostReceiver")
+            data = data + "\n"
             uart0.write(data.encode(ENCODING))
+            print("messageSentToServer")
         else:
             print("inside else hostReceiver")
             # forwarding
@@ -65,6 +78,7 @@ def process_from_router(package):
             newMessage = newData + "Reenvio"
             print("***NewMessage: ", newMessage)
             uart1.write(newMessage.encode(ENCODING))
+            print("Se envio mensaje a router")
     
 
 def main():
@@ -91,7 +105,7 @@ def main():
         if COMMUNICATION_ESTABLISHED == False:
             uart1.write("INIT\n".encode(ENCODING))
                     
-        utime.sleep_ms(2000)
+        utime.sleep_ms(5000)
         #print("enviando: GR2|GR7|1|0|HelloWorld")
         #uart0.write("GR2|GR7|1|0|HelloWorld\n")
         
