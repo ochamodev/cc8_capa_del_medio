@@ -93,7 +93,7 @@ def main():
                     
         utime.sleep_ms(2000)
         #print("enviando: GR2|GR7|1|0|HelloWorld")
-        uart0.write("GR2|GR7|1|0|HelloWorld\n")
+        #uart0.write("GR2|GR7|1|0|HelloWorld\n")
         
 
 
