@@ -25,7 +25,7 @@ def process_from_server(message):
         "id": messageParts[2]
     }
     package = HOST_NAME + "|" + messageData["to"] + "|" + messageData["id"] + "|" + "0|" + messageData["message"]
-    package + '\n'
+    package = package + '\n'
     print("package: ", package)
     # Envio a la otra placa
     uart1.write(package.encode(ENCODING))
@@ -44,9 +44,9 @@ def process_from_router(package):
         return
     
     print("data recibida:", data)
-    print(": ", data == "INIT")
+    print("data == INIT:", data == "INIT")
     if (data == "INIT"):
-        uart1.write("STARTED".encode(ENCODING))
+        uart1.write("STARTED\n".encode(ENCODING))
         global COMMUNICATION_ESTABLISHED
         COMMUNICATION_ESTABLISHED = True
     elif (data == "STARTED"):
@@ -57,7 +57,6 @@ def process_from_router(package):
         global COMMUNICATION_ESTABLISHED
         COMMUNICATION_ESTABLISHED = True
         messageParts = data.split("|")
-        print(messageParts)
         messageData = {
             "emitter": messageParts[0],
             "hostReceiver": messageParts[1],
